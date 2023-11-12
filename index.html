@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction Time Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
+</head>
+<body>
+    <h1>Test Your Reaction Time</h1>
+    <div id="gameArea">
+        <button id="startButton">Start Test</button>
+        <div id="reactionPrompt" class="hidden">React Now!</div>
+    </div>
+    <p id="result" class="hidden"></p>
+    <p id="rankDisplay" class="hidden"></p> <!-- Added element to display the rank -->
+    <h2>Past Reaction Times</h2>
+    <ul id="reactionTimesList"></ul>
+
+    <h2>Reaction Time Comparisons</h2>
+    <canvas id="reactionTimeChart"></canvas>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+

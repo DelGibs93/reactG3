@@ -1,0 +1,44 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+#gameArea {
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
+    position: relative;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+#reactionPrompt {
+    font-size: 30px;
+    color: red;
+    font-weight: bold;
+}
+
+#startButton {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#result, #rankDisplay {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+#result {
+    color: blue;
+}
+
+#rankDisplay {
+    color: green; /* Or any other color you prefer */
+}
+
