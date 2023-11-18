@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reaction Time Test</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Test Your Reaction Time</h1>
@@ -19,9 +19,146 @@
     <ul id="reactionTimesList"></ul>
 
     <h2>Reaction Time Comparisons</h2>
-    <canvas id="reactionTimeChart"></canvas>
+    <canvas id="reactionTimeChart" width="400" height="200"></canvas>
     
-    <script src="script.js"></script>
+    <script>
+        let startTime;
+        let gameStarted = false;
+        let reactionTimes = []; // Array to store reaction times
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.addEventListener('keydown', handleResponse);
+        document.addEventListener('click', handleResponse);
+
+        // Sample data for the chart
+        const chartData = {
+            labels: ['Gibbon', 'Super Professional', 'Professional', 'Expert', 'Amateur', 'Unranked'],
+            datasets: [
+                {
+                    label: 'Reaction Times',
+                    data: [0, 0, 0, 0, 0, 0], // Initialize with zeros
+                    backgroundColor: [
+                        'rgba(255, 0, 0, 0.2)',
+                        'rgba(0, 255, 0, 0.2)',
+                        'rgba(0, 0, 255, 0.2)',
+                        'rgba(255, 255, 0, 0.2)',
+                        'rgba(255, 0, 255, 0.2)',
+                        'rgba(0, 255, 255, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 0, 0, 1)',
+                        'rgba(0, 255, 0, 1)',
+                        'rgba(0, 0, 255, 1)',
+                        'rgba(255, 255, 0, 1)',
+                        'rgba(255, 0, 255, 1)',
+                        'rgba(0, 255, 255, 1)',
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        // Create a bar chart
+        const ctx = document.getElementById('reactionTimeChart').getContext('2d');
+        const reactionTimeChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Reactions',
+                        },
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Rank',
+                        },
+                    },
+                },
+            },
+        });
+
+        function startGame() {
+            gameStarted = false;
+            hideElement('result');
+            hideElement('rankDisplay'); // Hide the rank display
+            hideElement('reactionPrompt');
+
+            let delayTime = Math.random() * 2000 + 1000; // Random delay
+            setTimeout(function() {
+                showElement('reactionPrompt');
+                gameStarted = true;
+                startTime = new Date().getTime();
+            }, delayTime);
+        }
+
+        function handleResponse(event) {
+            if (gameStarted && (event.type === 'click' || event.code === 'Space')) {
+                gameStarted = false;
+                let reactionTime = new Date().getTime() - startTime;
+                document.getElementById('result').innerText = 'Your reaction time: ' + reactionTime + ' ms';
+                reactionTimes.push(reactionTime);
+                updateReactionTimesList();
+                updateChartData(reactionTimes); // Update the chart with new data
+                showElement('result');
+                showElement('startButton');
+
+                // Determine and display the rank
+                let rank = classifyReactionTime(reactionTime);
+                document.getElementById('rankDisplay').innerText = 'Rank: ' + rank;
+                showElement('rankDisplay'); // Show the rank
+            }
+        }
+
+        function classifyReactionTime(reactionTime) {
+            if (reactionTime <= 209) return 'Gibbon';
+            else if (reactionTime <= 229) return 'Super Professional';
+            else if (reactionTime <= 249) return 'Professional';
+            else if (reactionTime <= 279) return 'Expert';
+            else if (reactionTime <= 330) return 'Amateur';
+            else return 'Unranked';
+        }
+
+        function updateReactionTimesList() {
+            const list = document.getElementById('reactionTimesList');
+            list.innerHTML = ''; // Clear existing list
+            reactionTimes.slice().reverse().forEach(time => {
+                const li = document.createElement('li');
+                li.textContent = `${time} ms`;
+                list.appendChild(li);
+            });
+        }
+
+        function updateChartData(reactionTimes) {
+            const data = reactionTimeChart.data;
+            data.datasets[0].data = [
+                countReactionRank('Gibbon', reactionTimes),
+                countReactionRank('Super Professional', reactionTimes),
+                countReactionRank('Professional', reactionTimes),
+                countReactionRank('Expert', reactionTimes),
+                countReactionRank('Amateur', reactionTimes),
+                countReactionRank('Unranked', reactionTimes),
+            ];
+            reactionTimeChart.update();
+        }
+
+        // Utility function to count reactions of a specific rank
+        function countReactionRank(rank, reactionTimes) {
+            return reactionTimes.filter((time) => classifyReactionTime(time) === rank).length;
+        }
+
+        function showElement(elementId) {
+            document.getElementById(elementId).classList.remove('hidden');
+        }
+
+        function hideElement(elementId) {
+            document.getElementById(elementId).classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
 

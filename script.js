@@ -1,73 +1,44 @@
-let startTime;
-let gameStarted = false;
-let reactionTimes = []; // Array to store reaction times
+// Assuming existing variables and functions are already defined.
+// Add the following changes and additions to script.js
 
-document.getElementById('startButton').addEventListener('click', startGame);
-document.addEventListener('keydown', handleResponse);
-document.addEventListener('click', handleResponse);
+let countdownInterval;
+let gameTimeout;
+
+function startCountdown() {
+    let countdown = 3;
+    document.getElementById('countdownDisplay').innerText = countdown;
+    countdownInterval = setInterval(() => {
+        countdown--;
+        document.getElementById('countdownDisplay').innerText = countdown;
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            startGame();
+        }
+    }, 1000);
+}
 
 function startGame() {
-    gameStarted = false;
-    hideElement('result');
-    hideElement('rankDisplay'); // Hide the rank display
-    hideElement('reactionPrompt');
+    // Hide the countdown display
+    document.getElementById('countdownDisplay').style.display = 'none';
 
-    let delayTime = Math.random() * 2000 + 1000; // Random delay
-    setTimeout(function() {
-        showElement('reactionPrompt');
-        gameStarted = true;
-        startTime = new Date().getTime();
-    }, delayTime);
+    // Random delay between 1 and 8 seconds
+    let randomDelay = Math.random() * 7000 + 1000; // 1000 to 8000 milliseconds
+    gameTimeout = setTimeout(() => {
+        // Logic to show the prompt and start the reaction time test
+        // ...
+    }, randomDelay);
 }
 
-function handleResponse(event) {
-    if (gameStarted && (event.type === 'click' || event.code === 'Space')) {
-        gameStarted = false;
-        let reactionTime = new Date().getTime() - startTime;
-        document.getElementById('result').innerText = 'Your reaction time: ' + reactionTime + ' ms';
-        reactionTimes.push(reactionTime);
-        updateReactionTimesList();
-        showElement('result');
-        showElement('startButton');
+function resetGame() {
+    // Clear any existing timeouts and intervals
+    clearTimeout(gameTimeout);
+    clearInterval(countdownInterval);
 
-        // Determine and display the rank
-        let rank = classifyReactionTime(reactionTime);
-        document.getElementById('rankDisplay').innerText = 'Rank: ' + rank;
-        showElement('rankDisplay'); // Show the rank
-    }
+    // Reset the game state
+    // ...
 }
 
-function classifyReactionTime(reactionTime) {
-    if (reactionTime <= 209) return 'Gibbon';
-    else if (reactionTime <= 229) return 'Super Professional';
-    else if (reactionTime <= 249) return 'Professional';
-    else if (reactionTime <= 279) return 'Expert';
-    else if (reactionTime <= 330) return 'Amateur';
-    else return 'Unranked';
-}
-
-function updateReactionTimesList() {
-    const list = document.getElementById('reactionTimesList');
-    list.innerHTML = ''; // Clear existing list
-    reactionTimes.slice().reverse().forEach(time => {
-        const li = document.createElement('li');
-        li.textContent = `${time} ms`;
-        list.appendChild(li);
-    });
-}
-
-function showElement(elementId) {
-    document.getElementById(elementId).classList.remove('hidden');
-}
-
-function hideElement(elementId) {
-    document.getElementById(elementId).classList.add('hidden');
-}
-
-// Sample data for the chart (assuming you've already added this)
-const chartData = {
-    // ... chart data ...
-};
-
-// ... rest of the chart setup code ...
+// Modify the event listeners or game start logic to call startCountdown instead of directly starting the game
+// For example:
+// document.getElementById('startButton').addEventListener('click', startCountdown);
 
